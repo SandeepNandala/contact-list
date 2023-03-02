@@ -1,21 +1,42 @@
-import styles from '../styles/user.module.css'
+import styles from "../styles/user.module.css";
+import React from "react";
+import "../index.css";
+import Home from "./Home";
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
+import Update from "./Update";
+import AddContact from "./AddContact";
 
-const App = () => {
-  const API_URL="https://jsonplaceholder.typicode.com/users"
-  let users=[];
-  const fetchUrl = async () => {
-    const response = await fetch(API_URL);
-    const data =await response.json();
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      users: [],
+      home: false,
+    };
+    this.API_URL = "https://jsonplaceholder.typicode.com/users";
+  }
+  fetchUrl = async () => {
+    let users = [];
+    const response = await fetch(this.API_URL);
+    const data = await response.json();
     console.log(data);
-    // users.push(data);
-    data.map((user)=>{
+    data.map((user) => {
       users.push(user);
-    })
-    console.log("users ",users);
+    });
+    this.setState({
+      ...this.state,
+      users,
+      home: true,
+    });
   };
-  fetchUrl();
-  const addContact = async () => {
-    const response = await fetch(API_URL, {
+  addContact = async () => {
+    let { users } = this.state;
+    const response = await fetch(this.API_URL, {
       method: "POST",
       body: JSON.stringify({
         id: 11,
@@ -44,16 +65,23 @@ const App = () => {
         "Content-type": "application/json; charset=UTF-8",
       },
     });
-    const data=await response.json();
+    const data = await response.json();
     users.push(data);
-    console.log("add data",data);
-    console.log(users);
+    this.setState({
+      ...this.state,
+      users,
+      home: true,
+    });
+    // console.log("add data",data);
+    // console.log(users);
   };
-  const updateContact = async (userId) => {
-    const response = await fetch(`${API_URL}/${userId}`, {
+  updateContact = async (userId) => {
+    let { users } = this.state;
+    // console.log("userd id in App ",userId)
+    const response = await fetch(`${this.API_URL}/${userId}`, {
       method: "PUT",
       body: JSON.stringify({
-        id:1,
+        id: 1,
         name: "Coding",
         username: "Bret",
         email: "Sincere@april.biz",
@@ -79,103 +107,91 @@ const App = () => {
         "Content-type": "application/json; charset=UTF-8",
       },
     });
-    const data=await response.json();
-    console.log("update data",data);
-    console.log("before updating the old user ",users);
-    users.map((user)=>{
+    const data = await response.json();
+    // console.log("update data", data);
+    // console.log("before updating the old user ", users);
+    users.map((user) => {
       // console.log(user);
-      if(user.id===userId)
-        {
-          const index=users.indexOf(user);
-          console.log(index);
-          users[index]=data;
-          console.log(user);
-        }
-    })
-    // users.push(data);
-    console.log("after updating the user ",users);
-    // users=users.filter((user)=>user!=userId);
-    // users.push(data);
-    // console.log(users);
-    
-  };
-  const deleteContact=async(userId)=>{
-    const response = await fetch(`${API_URL}/${userId}`,{
-      method:"DELETE",
+      if (user.id === userId) {
+        const index = users.indexOf(user);
+        // console.log(index);
+        users[index] = data;
+        // console.log(user);
+      }
     });
-    console.log(response);
-    if(response.ok){
-      console.log("if condition")
-      users.map((user)=>{
-        if(user.id===userId)
-          {
-            const index=users.indexOf(user);
-            console.log(index);
-            users.splice(index,1);
-          }
-      })
+     this.setState({
+      ...this.state,
+      users,
+      home: true,
+    });
+    console.log("update ended");
+  };
+  deleteContact = async (userId) => {
+    let { users } = this.state;
+    const response = await fetch(`${this.API_URL}/${userId}`, {
+      method: "DELETE",
+    });
+    // console.log(response);
+    if (response.ok) {
+      // console.log("if condition")
+      users.map((user) => {
+        if (user.id === userId) {
+          const index = users.indexOf(user);
+          // console.log(index);
+          users.splice(index, 1);
+        }
+      });
     }
-    // const data = await response.json();
-    console.log("users after delete",users);
-    // const index=users.indexOf(data);
-    // delete users[index];
-    
+    this.setState({
+      ...this.state,
+      users,
+      home: true,
+    });
+  };
+  render() {
+    let { users, home } = this.state;
+    // console.log("users ",users)
+    return (
+      <div className="app">
+        <Router>
+          <Routes>
+            <Route
+              exact
+              path="/"
+              element={
+                <Home
+                  users={this.state.users}
+                  home={this.state.home}
+                  fetchUrl={this.fetchUrl}
+                  addContact={this.addContact}
+                  deleteContact={this.deleteContact}
+                  updateContact={this.updateContact}
+                />
+              }
+            />
+            <Route
+              path="/update/:id"
+              element={
+                <Update
+                  users={this.state.users}
+                  updateContact={this.updateContact}
+                />
+              }
+            />
+            <Route
+              path="/add-contact"
+              element={
+                <AddContact
+                  users={this.state.users}
+                  addContact={this.addContact}
+                />
+              }
+            />
+          </Routes>
+        </Router>
+      </div>
+    );
   }
-  // addContact();
-  // updateContact(1);
-  deleteContact(3);
-  // fetchUrl();
-  return (
-    <div className="app">
-      <p>{users}</p>
-      {users.map((user)=>(
-         <div className={styles.settings}>
-         <div className={styles.imgContainer}>
-           <img
-             src="https://cdn-icons-png.flaticon.com/512/2202/2202112.png"
-             alt=""
-           />
-         </div>
-   
-         <div className={styles.field}>
-           <div className={styles.fieldLabel}>Email</div>
-           <div className={styles.fieldValue}>{user.email}</div>
-         </div>
-         <div className={styles.field}>
-           <div className={styles.fieldLabel}>Name</div>
-           <div className={styles.fieldValue}>{user.name}</div>
-         </div>
-   
-         <div className={styles.btnGrp}>
-             <button className={`button ${styles.saveBtn}`}>Delete</button>
-             <button className={`button ${styles.saveBtn}`}>Update</button>
-         </div>
-       </div>)
-      )}
-    {/* <div className={styles.settings}>
-      <div className={styles.imgContainer}>
-        <img
-          src="https://cdn-icons-png.flaticon.com/512/2202/2202112.png"
-          alt=""
-        />
-      </div>
-
-      <div className={styles.field}>
-        <div className={styles.fieldLabel}>Email</div>
-        <div className={styles.fieldValue}>Sincere@april.biz</div>
-      </div>
-      <div className={styles.field}>
-        <div className={styles.fieldLabel}>Name</div>
-        <div className={styles.fieldValue}>Leanne Graham</div>
-      </div>
-
-      <div className={styles.btnGrp}>
-          <button className={`button ${styles.saveBtn}`}>Delete</button>
-          <button className={`button ${styles.saveBtn}`}>Update</button>
-      </div>
-    </div> */}
-    </div>
-  );
-};  
+}
 
 export default App;
