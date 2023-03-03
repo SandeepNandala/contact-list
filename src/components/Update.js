@@ -9,9 +9,9 @@ const Update=(props)=> {
     const userId=useParams();  
     let user={};
     // let [user,setUser]=useState({});
-    let [name,setName]=useState('');
-    const [email,setEmail]=useState('');
-    let updated=true;
+    // let [name,setName]=useState('');
+    // const [email,setEmail]=useState('');
+    let updated=false;
 
     // useEffect(()=>{
         const gettingUser=()=>{
@@ -20,7 +20,7 @@ const Update=(props)=> {
                 // console.log("usr.id ",typeof usr.id," userId.id ",typeof userId.id)
                 if (usr.id === parseInt(userId.id)) {
                   const index = users.indexOf(usr);
-                  console.log(index);
+                  // console.log(index);
                 //   setUser(...users[index])
                   user={...users[index]}
                   console.log("user ",user)
@@ -56,7 +56,7 @@ const Update=(props)=> {
         </div> */}
         
         {/* {users.map((user)=>( */}
-            <div key={`user-${user.id}`} className={styles.settings}>
+        {!updated?(  <div key={`user-${user.id}`} className={styles.settings}>
             <div className={styles.imgContainer}>
               <img
                 src="https://cdn-icons-png.flaticon.com/512/2202/2202112.png"
@@ -68,7 +68,7 @@ const Update=(props)=> {
               <div className={styles.fieldLabel}>Name</div>
               <div className={styles.fieldValue}>{user.name}</div>
               <div className={styles.fieldLabel}>Email</div>
-              <input type={email} placeholder={user.email} onChange={changeEmail}></input>
+              <input type="email" placeholder={user.email} onChange={changeEmail}></input>
               {/* <div className={styles.fieldValue}>{user.email}</div> */}
               <div className={styles.fieldLabel}>User Name</div>
               <div className={styles.fieldValue}>{user.username}</div>
@@ -76,9 +76,9 @@ const Update=(props)=> {
             </div>
             <div className={styles.field}>
             <div className={styles.fieldLabel}>Phone</div>
-              <input type={"Text"} placeholder={user.phone} onChange={phoneChange}></input>
+              <input type="text" placeholder={user.phone} onChange={phoneChange}></input>
             <div className={styles.fieldLabel}>Website</div>
-              <input type={"Text"} placeholder={user.website} onChange={websiteChange}></input>
+              <input type="text" placeholder={user.website} onChange={websiteChange}></input>
             </div>
            
             <div className={styles.btnGrp}>
@@ -87,7 +87,10 @@ const Update=(props)=> {
             <Link to={"/"}>
                  <button className={`button ${styles.saveBtn}`}>Back</button>  
             </Link>
-          </div>
+          </div>):(
+            <Navigate to="/" />
+          )}
+          
           
           {/* {updated?( <Link to={"/"}>
                  <button className={`button ${styles.saveBtn}`}>Back</button>  

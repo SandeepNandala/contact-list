@@ -1,5 +1,5 @@
 import styles from "../styles/user.module.css";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../index.css";
 import Home from "./Home";
 import {
@@ -11,32 +11,61 @@ import {
 } from "react-router-dom";
 import Update from "./Update";
 import AddContact from "./AddContact";
+import { useCustom } from "../hooks";
 
-class App extends React.Component {
-  constructor() {
+class App extends React.Component{
+  constructor(){
     super();
-    this.state = {
-      users: [],
-      home: false,
+    this.state={
+      users:[],
+    }
+     this.API_URL = "https://jsonplaceholder.typicode.com/users";
+     this.fetchUrl = async () => {
+      let {users}=this.state;
+      const response = await fetch(this.API_URL);
+      const data = await response.json();
+      console.log(data);
+      data.map((user) => {
+        users.push(user);
+      });
+      this.state.users=users;
+      this.setState({
+        ...this.state,
+        users
+      })
     };
-    this.API_URL = "https://jsonplaceholder.typicode.com/users";
+    this.fetchUrl();
   }
-  fetchUrl = async () => {
-    let users = [];
-    const response = await fetch(this.API_URL);
-    const data = await response.json();
-    console.log(data);
-    data.map((user) => {
-      users.push(user);
-    });
-    this.setState({
-      ...this.state,
-      users,
-      home: true,
-    });
-  };
-  addContact = async () => {
-    let { users } = this.state;
+//  let [users,setUsers]=useState([])
+//  let [mainUsers,setMainUsers]=useState([])
+
+//  const API_URL = "https://jsonplaceholder.typicode.com/users";
+
+
+// useEffect(()=>{
+//    const fetchUrl = async () => {
+//     let usersArray = [];
+//     const response = await fetch(API_URL);
+//     const data = await response.json();
+//     console.log(data);
+//     data.map((user) => {
+//       usersArray.push(user);
+//     });
+//     setUsers(usersArray);
+//   };
+//   fetchUrl();
+// },[])
+// let mainUsers=[];
+// setMainUsers(users);
+// let changed=false;
+
+// useEffect(()=>{
+//   console.log("");
+// },[changed])
+
+  
+addContact = async () => {
+  let {users}=this.state;
     const response = await fetch(this.API_URL, {
       method: "POST",
       body: JSON.stringify({
@@ -70,15 +99,12 @@ class App extends React.Component {
     users.push(data);
     this.setState({
       ...this.state,
-      users,
-      home: true,
-    });
-    // console.log("add data",data);
-    // console.log(users);
+      users
+    })
   };
-  updateContact = async (userId,user) => {
-    let { users } = this.state;
-    console.log("userd id in App ",userId,"user ",user)
+updateContact = async (userId,user) => {
+    let {users}=this.state;
+    console.log("App class ",user);
     const response = await fetch(`${this.API_URL}/${userId}`, {
       method: "PUT",
       body: JSON.stringify({
@@ -109,8 +135,6 @@ class App extends React.Component {
       },
     });
     const data = await response.json();
-    // console.log("update data", data);
-    // console.log("before updating the old user ", users);
     users.map((user) => {
       // console.log(user);
       if (user.id === userId) {
@@ -120,16 +144,14 @@ class App extends React.Component {
         // console.log(user);
       }
     });
-     this.setState({
-      ...this.state,
-      users,
-      home: true,
-    });
-    console.log("update ended");
+   this.setState({
+    ...this.state,
+    users
+   })
     alert("user updated successfully");
   };
-  deleteContact = async (userId) => {
-    let { users } = this.state;
+deleteContact = async (userId) => {
+  let {users}=this.state;
     const response = await fetch(`${this.API_URL}/${userId}`, {
       method: "DELETE",
     });
@@ -140,19 +162,25 @@ class App extends React.Component {
         if (user.id === userId) {
           const index = users.indexOf(user);
           // console.log(index);
+          alert(`${users[index].name} deleted successfully`)
           users.splice(index, 1);
         }
       });
     }
     this.setState({
       ...this.state,
-      users,
-      home: true,
-    });
+      users
+    })
+    
   };
-  render() {
-    let { users, home } = this.state;
-    // console.log("users ",users)
+
+  componentDidMount(){
+    this.setState({
+      ...this.state,
+    })
+  }
+  render(){
+    let {users}=this.state;
     return (
       <div className="app">
         <Router>
@@ -162,9 +190,7 @@ class App extends React.Component {
               path="/"
               element={
                 <Home
-                  users={this.state.users}
-                  home={this.state.home}
-                  fetchUrl={this.fetchUrl}
+                  users={users}
                   addContact={this.addContact}
                   deleteContact={this.deleteContact}
                   updateContact={this.updateContact}
@@ -175,7 +201,7 @@ class App extends React.Component {
               path="/update/:id"
               element={
                 <Update
-                  users={this.state.users}
+                  users={users}
                   updateContact={this.updateContact}
                 />
               }
@@ -184,7 +210,7 @@ class App extends React.Component {
               path="/add-contact"
               element={
                 <AddContact
-                  users={this.state.users}
+                  users={users}
                   addContact={this.addContact}
                 />
               }
