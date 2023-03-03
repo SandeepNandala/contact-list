@@ -1,100 +1,66 @@
-import styles from "../styles/user.module.css";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "../index.css";
 import Home from "./Home";
-import {
-  BrowserRouter as Router,
-  Navigate,
-  Route,
-  Routes,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Update from "./Update";
 import AddContact from "./AddContact";
-import { useCustom } from "../hooks";
 import { toast } from "react-hot-toast";
 
-class App extends React.Component{
-  
-  constructor(){
+class App extends React.Component {
+  constructor() {
     super();
-    this.state={
-      users:[],
-    }
-     this.API_URL = "https://jsonplaceholder.typicode.com/users";
-     this.fetchUrl = async () => {
-      let {users}=this.state;
-      const response = await fetch(this.API_URL);
-      const data = await response.json();
-      console.log(data);
-      data.map((user) => {
-        users.push(user);
-      });
-      this.state.users=users;
-      this.setState({
-        ...this.state,
-        users
-      })
+    // initializing state
+    this.state = {
+      users: [],
     };
-    this.fetchUrl();
-    this.updated=false
+    // storing API url
+    this.API_URL = "https://jsonplaceholder.typicode.com/users";
   }
-//  let [users,setUsers]=useState([])
-//  let [mainUsers,setMainUsers]=useState([])
+  // fetching the url and assigning the users data to the state
+  fetchUrl = async () => {
+    let { users } = this.state;
+    const response = await fetch(this.API_URL);
+    const data = await response.json();
+    data.map((user) => {
+      users.push(user);
+    });
+    this.setState({
+      ...this.state,
+      users,
+    });
+  };
 
-//  const API_URL = "https://jsonplaceholder.typicode.com/users";
-
-
-// useEffect(()=>{
-//    const fetchUrl = async () => {
-//     let usersArray = [];
-//     const response = await fetch(API_URL);
-//     const data = await response.json();
-//     console.log(data);
-//     data.map((user) => {
-//       usersArray.push(user);
-//     });
-//     setUsers(usersArray);
-//   };
-//   fetchUrl();
-// },[])
-// let mainUsers=[];
-// setMainUsers(users);
-// let changed=false;
-
-// useEffect(()=>{
-//   console.log("");
-// },[changed])
-
-  
-addContact = async (user) => {
-  let {users}=this.state;
-  console.log(user);
+  // creating the new contact and sending the POST request to the URL
+  addContact = async (user) => {
+    let { users } = this.state;
+    // sending the POST request
     const response = await fetch(this.API_URL, {
       method: "POST",
-      // body: JSON.stringify({
-      //   id: 11,
-      //   name: "Sandy",
-      //   username: "Bret",
-      //   email: "Sincere@april.biz",
-      //   address: {
-      //     street: "Kulas Light",
-      //     suite: "Apt. 556",
-      //     city: "Gwenborough",
-      //     zipcode: "92998-3874",
-      //     geo: {
-      //       lat: "-37.3159",
-      //       lng: "81.1496",
-      //     },
-      //   },
-      //   phone: "1-770-736-8031 x56442",
-      //   website: "hildegard.org",
-      //   company: {
-      //     name: "Romaguera-Crona",
-      //     catchPhrase: "Multi-layered client-server neural-net",
-      //     bs: "harness real-time e-markets",
-      //   },
-      // }),
+      body: JSON.stringify({
+        ...user,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    });
+    // retrieving the data
+    const data = await response.json();
+    // as the request is a dummy call so pushing the new contact to our state
+    users.push(data);
+    this.setState({
+      ...this.state,
+      users,
+    });
+    // displaying the notification as new user added
+    toast.success("contact added successfuly");
+  };
+
+  // updating the existing user and sending the PUT method request
+  updateContact = async (userId, user) => {
+    let { users } = this.state;
+    // sending the PUT request with updated data
+    const response = await fetch(`${this.API_URL}/${userId}`, {
+      method: "PUT",
       body: JSON.stringify({
         ...user,
       }),
@@ -103,98 +69,55 @@ addContact = async (user) => {
       },
     });
     const data = await response.json();
-    users.push(data);
-    this.setState({
-      ...this.state,
-      users
-    })
-    toast.success("contact added successfuly")
-  };
-updateContact = async (userId,user) => {
-    let {users}=this.state;
-    console.log("App class ",user);
-    const response = await fetch(`${this.API_URL}/${userId}`, {
-      method: "PUT",
-      // body: JSON.stringify({
-      //   id: 1,
-      //   name: "Coding",
-      //   username: "Bret",
-      //   email: "Sincere@april.biz",
-      //   address: {
-      //     street: "Kulas Light",
-      //     suite: "Apt. 556",
-      //     city: "Gwenborough",
-      //     zipcode: "92998-3874",
-      //     geo: {
-      //       lat: "-37.3159",
-      //       lng: "81.1496",
-      //     },
-      //   },
-      //   phone: "1-770-736-8031 x56442",
-      //   website: "hildegard.org",
-      //   company: {
-      //     name: "Romaguera-Crona",
-      //     catchPhrase: "Multi-layered client-server neural-net",
-      //     bs: "harness real-time e-markets",
-      //   },
-      // }),
-      body: JSON.stringify({
-            ...user,
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    });
-    const data = await response.json();
+    // as it is a dummy call so updating the user in state
     users.map((user) => {
-      // console.log(user);
       if (user.id === userId) {
         const index = users.indexOf(user);
-        // console.log(index);
         users[index] = data;
-        // console.log(user);
       }
     });
-   this.setState({
-    ...this.state,
-    users
-   })
-   toast.success("user updated successfully");
-    // alert("user updated successfully");
-    // <Navigate to="/" />
+    this.setState({
+      ...this.state,
+      users,
+    });
+    // displying the user updated notification
+    toast.success("user updated successfully");
   };
-deleteContact = async (userId) => {
-  let {users}=this.state;
+
+  // deleting the existing user contact
+  deleteContact = async (userId) => {
+    let { users } = this.state;
+    // sending the delete request to the URL
     const response = await fetch(`${this.API_URL}/${userId}`, {
       method: "DELETE",
     });
-    // console.log(response);
+    // as it is a dummy call so once the request is successfull deleting the user from our state
     if (response.ok) {
-      // console.log("if condition")
       users.map((user) => {
         if (user.id === userId) {
           const index = users.indexOf(user);
-          // console.log(index);
           toast.success(`${users[index].name} deleted successfully`);
-          // alert(`${users[index].name} deleted successfully`)
           users.splice(index, 1);
         }
       });
     }
     this.setState({
       ...this.state,
-      users
-    })
-    
+      users,
+    });
   };
 
-  componentDidMount(){
+  componentDidMount() {
+    // calling the fetchUrl method to fetch users from API url
+    this.fetchUrl();
     this.setState({
       ...this.state,
-    })
+    });
   }
-  render(){
-    let {users,updated}=this.state;
+
+  // rendering the APP component with multiple routes
+  render() {
+    let { users, updated } = this.state;
     return (
       <div className="app">
         <Router>
@@ -205,6 +128,7 @@ deleteContact = async (userId) => {
               element={
                 <Home
                   users={users}
+                  fetchUrl={this.fetchUrl}
                   addContact={this.addContact}
                   deleteContact={this.deleteContact}
                   updateContact={this.updateContact}
@@ -214,20 +138,13 @@ deleteContact = async (userId) => {
             <Route
               path="/update/:id"
               element={
-                <Update
-                  users={users}
-                  updated={!updated}
-                  updateContact={this.updateContact}
-                />
+                <Update users={users} updateContact={this.updateContact} />
               }
             />
             <Route
               path="/add-contact"
               element={
-                <AddContact
-                  users={users}
-                  addContact={this.addContact}
-                />
+                <AddContact users={users} addContact={this.addContact} />
               }
             />
           </Routes>
