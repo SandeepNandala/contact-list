@@ -12,6 +12,7 @@ import {
 import Update from "./Update";
 import AddContact from "./AddContact";
 import { useCustom } from "../hooks";
+import { toast } from "react-hot-toast";
 
 class App extends React.Component{
   
@@ -107,6 +108,7 @@ addContact = async (user) => {
       ...this.state,
       users
     })
+    toast.success("contact added successfuly")
   };
 updateContact = async (userId,user) => {
     let {users}=this.state;
@@ -157,8 +159,9 @@ updateContact = async (userId,user) => {
     ...this.state,
     users
    })
-    alert("user updated successfully");
-    <Navigate to="/" />
+   toast.success("user updated successfully");
+    // alert("user updated successfully");
+    // <Navigate to="/" />
   };
 deleteContact = async (userId) => {
   let {users}=this.state;
@@ -172,7 +175,8 @@ deleteContact = async (userId) => {
         if (user.id === userId) {
           const index = users.indexOf(user);
           // console.log(index);
-          alert(`${users[index].name} deleted successfully`)
+          toast.success(`${users[index].name} deleted successfully`);
+          // alert(`${users[index].name} deleted successfully`)
           users.splice(index, 1);
         }
       });

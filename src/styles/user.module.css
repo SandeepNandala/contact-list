@@ -109,3 +109,19 @@
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 6px;
 }
+
+.addContact{
+  text-align: center;
+  margin-left: 40%;
+  margin-top:20px;
+  width:100px;
+  height:50px;
+  background-color:#18e229e2;
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  color:white  ;
+  text-decoration: none;
+  border: none;
+}

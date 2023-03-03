@@ -6,9 +6,9 @@ const Home=(props)=>{
     let home=true;
       return (
         <div>
-          <div className={`button ${styles.viewBtn}`}>
+          <div >
             <Link to='/add-contact'>
-             <button>Add Contact</button>  
+             <button className={styles.addContact} >Add Contact</button>  
             </Link> 
           </div>
           
