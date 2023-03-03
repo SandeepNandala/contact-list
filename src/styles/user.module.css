@@ -3,7 +3,20 @@
   align-self: flex-start;
   flex-direction: row;
 }
-
+.updateSettings {
+  display: inline-flex;
+  flex-direction: column;
+  align-self: center;
+  background: #fff;
+  padding: 30px;
+  border-radius: 6px;
+  margin: 0 auto;
+  margin-top: 50px;
+  margin-left: 2%;
+  width: 30%;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
 .settings {
   display: inline-flex;
   flex-direction: column;

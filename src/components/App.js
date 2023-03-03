@@ -7,6 +7,7 @@ import {
   Navigate,
   Route,
   Routes,
+  useNavigate,
 } from "react-router-dom";
 import Update from "./Update";
 import AddContact from "./AddContact";
@@ -75,9 +76,9 @@ class App extends React.Component {
     // console.log("add data",data);
     // console.log(users);
   };
-  updateContact = async (userId) => {
+  updateContact = async (userId,user) => {
     let { users } = this.state;
-    // console.log("userd id in App ",userId)
+    console.log("userd id in App ",userId,"user ",user)
     const response = await fetch(`${this.API_URL}/${userId}`, {
       method: "PUT",
       body: JSON.stringify({
@@ -125,6 +126,7 @@ class App extends React.Component {
       home: true,
     });
     console.log("update ended");
+    alert("user updated successfully");
   };
   deleteContact = async (userId) => {
     let { users } = this.state;
