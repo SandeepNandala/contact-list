@@ -66,32 +66,36 @@ class App extends React.Component{
 // },[changed])
 
   
-addContact = async () => {
+addContact = async (user) => {
   let {users}=this.state;
+  console.log(user);
     const response = await fetch(this.API_URL, {
       method: "POST",
+      // body: JSON.stringify({
+      //   id: 11,
+      //   name: "Sandy",
+      //   username: "Bret",
+      //   email: "Sincere@april.biz",
+      //   address: {
+      //     street: "Kulas Light",
+      //     suite: "Apt. 556",
+      //     city: "Gwenborough",
+      //     zipcode: "92998-3874",
+      //     geo: {
+      //       lat: "-37.3159",
+      //       lng: "81.1496",
+      //     },
+      //   },
+      //   phone: "1-770-736-8031 x56442",
+      //   website: "hildegard.org",
+      //   company: {
+      //     name: "Romaguera-Crona",
+      //     catchPhrase: "Multi-layered client-server neural-net",
+      //     bs: "harness real-time e-markets",
+      //   },
+      // }),
       body: JSON.stringify({
-        id: 11,
-        name: "Sandy",
-        username: "Bret",
-        email: "Sincere@april.biz",
-        address: {
-          street: "Kulas Light",
-          suite: "Apt. 556",
-          city: "Gwenborough",
-          zipcode: "92998-3874",
-          geo: {
-            lat: "-37.3159",
-            lng: "81.1496",
-          },
-        },
-        phone: "1-770-736-8031 x56442",
-        website: "hildegard.org",
-        company: {
-          name: "Romaguera-Crona",
-          catchPhrase: "Multi-layered client-server neural-net",
-          bs: "harness real-time e-markets",
-        },
+        ...user,
       }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -109,28 +113,31 @@ updateContact = async (userId,user) => {
     console.log("App class ",user);
     const response = await fetch(`${this.API_URL}/${userId}`, {
       method: "PUT",
+      // body: JSON.stringify({
+      //   id: 1,
+      //   name: "Coding",
+      //   username: "Bret",
+      //   email: "Sincere@april.biz",
+      //   address: {
+      //     street: "Kulas Light",
+      //     suite: "Apt. 556",
+      //     city: "Gwenborough",
+      //     zipcode: "92998-3874",
+      //     geo: {
+      //       lat: "-37.3159",
+      //       lng: "81.1496",
+      //     },
+      //   },
+      //   phone: "1-770-736-8031 x56442",
+      //   website: "hildegard.org",
+      //   company: {
+      //     name: "Romaguera-Crona",
+      //     catchPhrase: "Multi-layered client-server neural-net",
+      //     bs: "harness real-time e-markets",
+      //   },
+      // }),
       body: JSON.stringify({
-        id: 1,
-        name: "Coding",
-        username: "Bret",
-        email: "Sincere@april.biz",
-        address: {
-          street: "Kulas Light",
-          suite: "Apt. 556",
-          city: "Gwenborough",
-          zipcode: "92998-3874",
-          geo: {
-            lat: "-37.3159",
-            lng: "81.1496",
-          },
-        },
-        phone: "1-770-736-8031 x56442",
-        website: "hildegard.org",
-        company: {
-          name: "Romaguera-Crona",
-          catchPhrase: "Multi-layered client-server neural-net",
-          bs: "harness real-time e-markets",
-        },
+            ...user,
       }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
