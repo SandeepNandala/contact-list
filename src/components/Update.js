@@ -4,21 +4,21 @@ import styles from '../styles/user.module.css'
 import { useEffect, useState } from "react";
 
 const Update=(props)=> {
-    let {users,updateContact}=props;
+  const navigate=useNavigate();
+    let {users,updateContact,updated}=props;
     console.log(props);
     const userId=useParams();  
     let user={};
     // let [user,setUser]=useState({});
     // let [name,setName]=useState('');
     // const [email,setEmail]=useState('');
-    let updated=false;
 
     // useEffect(()=>{
-        const gettingUser=()=>{
+        const gettingUser=(userid)=>{
             users.map((usr) => {
                 // console.log(usr);
                 // console.log("usr.id ",typeof usr.id," userId.id ",typeof userId.id)
-                if (usr.id === parseInt(userId.id)) {
+                if (usr.id === parseInt(userid)) {
                   const index = users.indexOf(usr);
                   // console.log(index);
                 //   setUser(...users[index])
@@ -29,15 +29,28 @@ const Update=(props)=> {
               });
               updated=false;
         }
-        gettingUser();
+        gettingUser(userId.id);
+    const updatingUsers=(user)=>{
+      users.map((usr) => {
+        if (usr.id === parseInt(user.id)) {
+          const index = users.indexOf(usr);
+          // console.log(index);
+        //   setUser(...users[index])
+          users[index]=user;
+          // user={...users[index]}
+          // console.log("user ",user)
+        //   users.splice(index, 1);
+        }
+      });
+    }
     // },[])
     const phoneChange=(e)=>{
         user.phone=e.target.value;
         console.log(user.phone," ",e.target.value)
     }
     const changeEmail=(e)=>{
-        user.address.street=e.target.value;
-        console.log(user.address.street," ",e.target.value)
+        user.email=e.target.value;
+        console.log(user.email," ",e.target.value)
     }
     const websiteChange=(e)=>{
         user.website=e.target.value;
@@ -46,6 +59,10 @@ const Update=(props)=> {
     const changeUpdatedStatus=(id,user)=>{
         updated=true;
         updateContact(id,user)
+        updatingUsers(user);
+
+        // navigate(-1)
+        // navigate('/')
     }
     return (
         <div>
@@ -56,7 +73,8 @@ const Update=(props)=> {
         </div> */}
         
         {/* {users.map((user)=>( */}
-        {!updated?(  <div key={`user-${user.id}`} className={styles.settings}>
+        {/* {!updated?(  <div key={`user-${user.id}`} className={styles.settings}> */}
+       <div key={`user-${user.id}`} className={styles.settings}>
             <div className={styles.imgContainer}>
               <img
                 src="https://cdn-icons-png.flaticon.com/512/2202/2202112.png"
@@ -84,12 +102,10 @@ const Update=(props)=> {
             <div className={styles.btnGrp}>
                 <button className={`button ${styles.updateBtn}`} onClick={()=>{changeUpdatedStatus(userId.id,user)}}>Update</button>
             </div>
-            <Link to={"/"}>
+            <Link to={"/"} state={{users:users}}>
                  <button className={`button ${styles.saveBtn}`}>Back</button>  
             </Link>
-          </div>):(
-            <Navigate to="/" />
-          )}
+          </div>
           
           
           {/* {updated?( <Link to={"/"}>

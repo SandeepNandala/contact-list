@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 const Home=(props)=>{
     let {users,addContact,updateContact,deleteContact}=props;
     let home=true;
-    // if(home){
       return (
         <div>
           <div className={`button ${styles.viewBtn}`}>
@@ -40,13 +39,7 @@ const Home=(props)=>{
             </div>)
            )}
         </div>
-      )
-    // }
-    // else{
-
-    // }
-   
-        
+      ) 
 }
 
 export default Home;

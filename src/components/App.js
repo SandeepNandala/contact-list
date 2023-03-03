@@ -14,6 +14,7 @@ import AddContact from "./AddContact";
 import { useCustom } from "../hooks";
 
 class App extends React.Component{
+  
   constructor(){
     super();
     this.state={
@@ -35,6 +36,7 @@ class App extends React.Component{
       })
     };
     this.fetchUrl();
+    this.updated=false
   }
 //  let [users,setUsers]=useState([])
 //  let [mainUsers,setMainUsers]=useState([])
@@ -149,6 +151,7 @@ updateContact = async (userId,user) => {
     users
    })
     alert("user updated successfully");
+    <Navigate to="/" />
   };
 deleteContact = async (userId) => {
   let {users}=this.state;
@@ -180,7 +183,7 @@ deleteContact = async (userId) => {
     })
   }
   render(){
-    let {users}=this.state;
+    let {users,updated}=this.state;
     return (
       <div className="app">
         <Router>
@@ -202,6 +205,7 @@ deleteContact = async (userId) => {
               element={
                 <Update
                   users={users}
+                  updated={!updated}
                   updateContact={this.updateContact}
                 />
               }
