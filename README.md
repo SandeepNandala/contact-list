@@ -1,6 +1,5 @@
 # Contact List using React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 API_URL: https://jsonplaceholder.typicode.com/users
 
 ## Available Scripts
